@@ -1,20 +1,47 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+#  ForkProof
 
-# Run and deploy your AI Studio app
+**ForkProof** is a premium web platform that provides **authentic restaurant reviews verified using geo-tagged photos and AI validation**.
+The platform ensures that reviews are posted only by users who have actually visited the restaurant.
 
-This contains everything you need to run your app locally.
+Unlike traditional review platforms where fake reviews are common, **ForkProof verifies user reviews using location data, timestamps, and AI-powered image validation.**
 
-View your app in AI Studio: https://ai.studio/apps/69ea890d-4924-41b5-a176-2366eec26eac
+---
 
-## Run Locally
+#  Features
 
-**Prerequisites:**  Node.js
+## 1. Verified Restaurant Reviews
 
+Users can post reviews with:
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+*  Star rating (1–5)
+*  Written review
+*  Geo-tagged photo
+
+Every review is validated using:
+
+* GPS coordinates
+* Photo metadata
+* AI image verification
+
+Verified reviews receive a **✔ Verified Visit badge**.
+
+---
+
+## 2. Geo-Tag Authentication
+
+When a photo is uploaded, the system extracts:
+
+*  GPS coordinates
+*  Timestamp from metadata
+
+Validation rules:
+
+* Photo must be taken within **48 hours**
+* Photo location must be **within 100 meters of the restaurant**
+* Otherwise the review is marked **Unverified**
+
+---
+
+## 3. AI Image Validation (Gemini API)
+
+Th
