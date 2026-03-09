@@ -5,32 +5,26 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [search, setSearch] = useState("");
-  const [restaurants, setRestaurants] = useState([
-    {
-      _id: "1",
-      name: "The Oat Milk Cafe",
-      location: "Brooklyn, NY",
-      category: "Breakfast & Brunch",
-      averageRating: 4.8,
-      photos: ["https://picsum.photos/seed/cafe/400/300"]
-    },
-    {
-      _id: "2",
-      name: "Green Tea Garden",
-      location: "San Francisco, CA",
-      category: "Japanese",
-      averageRating: 4.5,
-      photos: ["https://picsum.photos/seed/garden/400/300"]
-    },
-    {
-      _id: "3",
-      name: "Minimalist Bistro",
-      location: "Austin, TX",
-      category: "Modern American",
-      averageRating: 4.9,
-      photos: ["https://picsum.photos/seed/bistro/400/300"]
-    }
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [restaurants, setRestaurants] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const url = search ? `/api/restaurants?q=${search}` : "/api/restaurants";
+        const response = await fetch(url);
+        const data = await response.json();
+        setRestaurants(data);
+      } catch (error) {
+        console.error("Failed to fetch restaurants:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchRestaurants, 300);
+    return () => clearTimeout(timeoutId);
+  }, [search]);
 
   // Generate 20 mock reviews
   const mockReviews = Array.from({ length: 20 }).map((_, i) => ({
@@ -55,30 +49,30 @@ const Home = () => {
   }));
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className="max-w-6xl mx-auto px-6 py-12"
     >
       <header className="text-center mb-16">
-        <motion.h1 
+        <motion.h1
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           className="text-5xl md:text-7xl font-display font-bold text-slate-800 mb-6 tracking-tight"
         >
-          Authentic Reviews.<br/>
+          Authentic Reviews.<br />
           <span className="text-tea-dark">Verified by AI.</span>
         </motion.h1>
         <p className="text-slate-600 text-lg max-w-2xl mx-auto mb-10">
-          Discover restaurants with reviews you can actually trust. 
+          Discover restaurants with reviews you can actually trust.
           Every verified post is backed by geo-tagged photos and Gemini AI validation.
         </p>
-        
+
         <div className="relative max-w-xl mx-auto">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search restaurants, cuisines, or locations..."
             className="w-full pl-12 pr-4 py-4 rounded-2xl glass border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700 shadow-xl"
             value={search}
@@ -94,7 +88,7 @@ const Home = () => {
             View all <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {restaurants.map((rest, idx) => (
             <motion.div
@@ -108,9 +102,9 @@ const Home = () => {
               <Link to={`/restaurant/${rest._id}`}>
                 <div className="glass rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                   <div className="h-48 overflow-hidden relative">
-                    <img 
-                      src={rest.photos[0]} 
-                      alt={rest.name} 
+                    <img
+                      src={rest.photos[0]}
+                      alt={rest.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
@@ -143,7 +137,7 @@ const Home = () => {
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-display font-bold text-slate-800">Recent Community Activity</h2>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {mockReviews.map((review, idx) => (
             <motion.div

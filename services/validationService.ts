@@ -12,7 +12,7 @@ export const validateImageWithGemini = async (imageBuffer: Buffer, mimeType: str
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const model = "gemini-3-flash-preview";
+  const model = "gemini-1.5-flash";
 
   const prompt = `
     Analyze this image for a restaurant review platform.
@@ -65,8 +65,8 @@ export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2
   const Δλ = (lon2 - lon1) * Math.PI / 180;
 
   const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return R * c; // in metres

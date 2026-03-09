@@ -29,11 +29,14 @@ async function startServer() {
   app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
   // Database Connection
-  const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/restrocheck";
+  const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/ForkProof";
+  console.log("Connecting to MongoDB at:", MONGODB_URI);
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000
+    });
     console.log("Connected to MongoDB");
-    
+
     // Seed initial data if empty
     const count = await Restaurant.countDocuments();
     if (count === 0) {
@@ -70,7 +73,7 @@ async function startServer() {
   app.use("/api/users", userRoutes);
 
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", message: "RestroCheck API is running" });
+    res.json({ status: "ok", message: "ForkProof API is running" });
   });
 
   // Vite middleware for development
