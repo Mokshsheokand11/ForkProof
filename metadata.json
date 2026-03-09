@@ -1,0 +1,5 @@
+{
+  "name": "RestroCheck",
+  "description": "Authentic restaurant reviews verified by AI and Geo-tagging.",
+  "requestFramePermissions": ["camera", "geolocation"]
+}
