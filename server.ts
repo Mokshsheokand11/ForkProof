@@ -15,6 +15,7 @@ import userRoutes from "./routes/users.js";
 import { Restaurant } from "./models/schemas.js";
 
 dotenv.config();
+mongoose.set('bufferCommands', false);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,6 +66,42 @@ async function startServer() {
   } catch (err) {
     console.warn("MongoDB connection failed. Using mock data mode.", err.message);
   }
+
+  // Connection check middleware
+  app.use("/api", (req, res, next) => {
+    if (mongoose.connection.readyState !== 1 && req.path !== "/health") {
+      // Mock data for testing when DB is down
+      if (req.path.startsWith("/restaurants/")) {
+        return res.json({
+          _id: req.path.split("/").pop(),
+          name: "Mock Restaurant (No Database)",
+          location: "123 Mock St, Test City",
+          description: "This is a mock restaurant because the database is disconnected.",
+          photos: ["https://picsum.photos/seed/mock/800/600"],
+          averageRating: 4.5
+        });
+      }
+      if (req.path === "/restaurants") {
+        return res.json([{
+          _id: "mock-1",
+          name: "Mock Restaurant (No Database)",
+          location: "123 Mock St, Test City",
+          category: "Mock",
+          photos: ["https://picsum.photos/seed/mock/800/600"],
+          averageRating: 4.5
+        }]);
+      }
+      if (req.path.startsWith("/reviews/restaurant/")) {
+        return res.json([]);
+      }
+      
+      return res.status(503).json({ 
+        error: "Database disconnected", 
+        message: "The server is running but database operations are restricted to mock data." 
+      });
+    }
+    next();
+  });
 
   // API Routes
   app.use("/api/auth", authRoutes);

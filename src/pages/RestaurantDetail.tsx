@@ -12,6 +12,7 @@ const RestaurantDetail = () => {
   const [restaurant, setRestaurant] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -227,12 +228,16 @@ const RestaurantDetail = () => {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Rating</label>
-                  <div className="flex gap-2">
+                  <div 
+                    className="flex gap-2"
+                    onMouseLeave={() => setHoverRating(0)}
+                  >
                     {[1, 2, 3, 4, 5].map(s => (
                       <Star
                         key={s}
                         onClick={() => setRating(s)}
-                        className={`w-8 h-8 cursor-pointer hover:text-amber-400 transition-colors ${s <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`}
+                        onMouseEnter={() => setHoverRating(s)}
+                        className={`w-8 h-8 cursor-pointer transition-colors ${(hoverRating || rating) >= s ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`}
                       />
                     ))}
                   </div>
