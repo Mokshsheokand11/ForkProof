@@ -119,12 +119,19 @@ const Auth = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center">
+        <div className="mt-10 pt-8 border-t border-slate-100/50 text-center">
+          <p className="text-slate-400 text-sm mb-3">
+            {isLogin ? "New to ForkProof?" : "Been here before?"}
+          </p>
           <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm font-bold text-slate-500 hover:text-tea-dark transition-colors"
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError("");
+            }}
+            className="group flex items-center justify-center gap-2 mx-auto text-tea-dark font-bold hover:scale-105 transition-all"
           >
-            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+            <span>{isLogin ? "Create an account" : "Sign in to your account"}</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </motion.div>
