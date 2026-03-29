@@ -120,6 +120,19 @@ async function startServer() {
       appType: "spa",
     });
     app.use(vite.middlewares);
+    
+    // SPA Catch-all for development
+    app.use("*", async (req, res, next) => {
+      const url = req.originalUrl;
+      try {
+        let template = (await import("fs")).readFileSync(path.resolve(__dirname, "index.html"), "utf-8");
+        template = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+      } catch (e) {
+        vite.handleHmrError(e);
+        next(e);
+      }
+    });
   } else {
     app.use(express.static(path.join(__dirname, "dist")));
     app.get("*", (req, res) => {

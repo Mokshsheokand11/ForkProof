@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
 import { Search, MapPin, Star, ChevronRight, CheckCircle, Heart, MessageCircle } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [restaurants, setRestaurants] = useState<any[]>([]);
+
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newRest, setNewRest] = useState({ name: "", location: "", category: "Restaurant", description: "" });
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -25,6 +29,32 @@ const Home = () => {
     const timeoutId = setTimeout(fetchRestaurants, 300);
     return () => clearTimeout(timeoutId);
   }, [search]);
+
+  const handleAddRestaurant = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newRest.name || !newRest.location) return;
+    
+    setIsAdding(true);
+    try {
+      const response = await fetch("/api/restaurants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...newRest,
+          coordinates: { lat: 40.7128, lng: -74.0060 }, // Default coordinates
+          photos: ["https://picsum.photos/seed/" + Math.random() + "/800/600"]
+        })
+      });
+      const data = await response.json();
+      setRestaurants([data, ...restaurants]);
+      setShowAddModal(false);
+      setNewRest({ name: "", location: "", category: "Restaurant", description: "" });
+    } catch (error) {
+      console.error("Error adding restaurant:", error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   // Generate 20 mock reviews
   const mockReviews = Array.from({ length: 20 }).map((_, i) => ({
@@ -69,69 +99,163 @@ const Home = () => {
           Every verified post is backed by geo-tagged photos and Gemini AI validation.
         </p>
 
-        <div className="relative max-w-xl mx-auto">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search restaurants, cuisines, or locations..."
-            className="w-full pl-12 pr-4 py-4 rounded-2xl glass border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700 shadow-xl"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="relative max-w-xl mx-auto flex gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search restaurants, cuisines, or locations..."
+              className="w-full pl-12 pr-4 py-4 rounded-2xl glass border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700 shadow-xl"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowAddModal(true)}
+            className="bg-tea-dark text-white px-6 rounded-2xl font-bold shadow-xl flex items-center gap-2 whitespace-nowrap"
+          >
+            Add New
+          </motion.button>
         </div>
       </header>
 
       <section className="mb-20">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-display font-bold text-slate-800">Trending Restaurants</h2>
-          <button className="text-tea-dark font-semibold flex items-center gap-1 hover:underline">
-            View all <ChevronRight className="w-4 h-4" />
-          </button>
+          <h2 className="text-2xl font-display font-bold text-slate-800">
+            {search ? `Search Results for "${search}"` : "Trending Restaurants"}
+          </h2>
+          {!search && (
+            <button className="text-tea-dark font-semibold flex items-center gap-1 hover:underline">
+              View all <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {restaurants.map((rest, idx) => (
-            <motion.div
-              key={rest._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="group"
+        {restaurants.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {restaurants.map((rest, idx) => (
+              <motion.div
+                key={rest._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="group"
+              >
+                <Link to={`/restaurant/${rest._id}`}>
+                  <div className="glass rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div className="h-48 overflow-hidden relative">
+                      <img
+                        src={rest.photos[0]}
+                        alt={rest.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                        <span className="text-sm font-bold text-slate-800">{rest.averageRating}</span>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-display font-bold text-slate-800 mb-1">{rest.name}</h3>
+                      <div className="flex items-center gap-1 text-slate-500 text-sm mb-3">
+                        <MapPin className="w-3 h-3" />
+                        <span>{rest.location}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium px-3 py-1 bg-tea/50 text-tea-dark rounded-full">
+                          {rest.category}
+                        </span>
+                        <span className="text-xs text-slate-400">Reviews</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200">
+            <p className="text-slate-500 mb-6">No restaurants found matching your search.</p>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-tea-dark text-white px-8 py-3 rounded-2xl font-bold shadow-lg"
             >
-              <Link to={`/restaurant/${rest._id}`}>
-                <div className="glass rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-                  <div className="h-48 overflow-hidden relative">
-                    <img
-                      src={rest.photos[0]}
-                      alt={rest.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                      <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                      <span className="text-sm font-bold text-slate-800">{rest.averageRating}</span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-display font-bold text-slate-800 mb-1">{rest.name}</h3>
-                    <div className="flex items-center gap-1 text-slate-500 text-sm mb-3">
-                      <MapPin className="w-3 h-3" />
-                      <span>{rest.location}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium px-3 py-1 bg-tea/50 text-tea-dark rounded-full">
-                        {rest.category}
-                      </span>
-                      <span className="text-xs text-slate-400">120+ Reviews</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+              Add {search} to ForkProof
+            </button>
+          </div>
+        )}
       </section>
+
+      {/* Add Restaurant Modal */}
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAddModal(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-lg glass rounded-[40px] p-10 shadow-2xl"
+            >
+              <h2 className="text-3xl font-display font-bold text-slate-800 mb-8">Add New Restaurant</h2>
+              <form onSubmit={handleAddRestaurant} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Restaurant Name</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none"
+                    placeholder="Enter name..."
+                    value={newRest.name}
+                    onChange={e => setNewRest({ ...newRest, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Location</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none"
+                    placeholder="Address or City..."
+                    value={newRest.location}
+                    onChange={e => setNewRest({ ...newRest, location: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Category</label>
+                  <select
+                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none appearance-none"
+                    value={newRest.category}
+                    onChange={e => setNewRest({ ...newRest, category: e.target.value })}
+                  >
+                    <option>Breakfast & Brunch</option>
+                    <option>Italian</option>
+                    <option>Japanese</option>
+                    <option>Cafe</option>
+                    <option>Fine Dining</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAdding}
+                  className="w-full bg-tea-dark text-white py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                >
+                  {isAdding ? "Adding..." : "Add Restaurant"}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <section>
         <div className="flex items-center justify-between mb-8">

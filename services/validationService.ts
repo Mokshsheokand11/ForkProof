@@ -26,7 +26,7 @@ export const validateImageWithGemini = async (imageBuffer: Buffer, mimeType: str
   `;
 
   try {
-    const result = await ai.models.generateContent({
+    const response = await ai.models.generateContent({
       model,
       contents: [
         {
@@ -46,7 +46,10 @@ export const validateImageWithGemini = async (imageBuffer: Buffer, mimeType: str
       }
     });
 
-    return JSON.parse(result.text);
+    const responseText = response.text || "";
+    // Clean up potential markdown formatting in response
+    const cleanJson = responseText.replace(/```json\n?|\n?```/g, "").trim();
+    return JSON.parse(cleanJson);
   } catch (error) {
     console.error("Gemini validation error:", error);
     return {
