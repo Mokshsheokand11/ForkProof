@@ -109,15 +109,15 @@ const RestaurantDetail = () => {
         {/* Left Column: Info */}
         <div className="lg:col-span-2">
           <section className="mb-12">
-            <h2 className="text-2xl font-display font-bold text-slate-800 mb-4">About</h2>
-            <p className="text-slate-600 leading-relaxed text-lg">
+            <h2 className="text-2xl font-display font-bold mb-4">About</h2>
+            <p className="text-muted leading-relaxed text-lg">
               {restaurant.description}
             </p>
           </section>
 
           <section>
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-display font-bold text-slate-800">Reviews</h2>
+              <h2 className="text-2xl font-display font-bold">Reviews</h2>
               <button
                 onClick={() => setShowReviewModal(true)}
                 className="bg-tea-dark text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-tea-dark/90 transition-all flex items-center gap-2"
@@ -128,23 +128,23 @@ const RestaurantDetail = () => {
 
             <div className="space-y-8">
               {reviews.map((review) => (
-                <div key={review._id} className="glass rounded-[32px] p-8 shadow-sm">
+                <div key={review._id} className="glass-card !p-8 shadow-sm">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
-                      <img src={review.user.avatar} alt={review.user.name} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
+                      <img src={review.user.avatar} alt={review.user.name} className="w-12 h-12 rounded-full border-2 border-white dark:border-slate-700 shadow-sm transition-colors" />
                       <div>
-                        <h4 className="font-bold text-slate-800">{review.user.name}</h4>
-                        <span className="text-xs text-slate-400">{review.timestamp}</span>
+                        <h4 className="font-bold">{review.user.name}</h4>
+                        <span className="text-xs text-muted">{review.timestamp}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
+                        <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200 dark:text-slate-700'}`} />
                       ))}
                     </div>
                   </div>
 
-                  <p className="text-slate-700 mb-6 text-lg leading-relaxed">
+                  <p className="text-muted mb-6 text-lg leading-relaxed">
                     {review.text}
                   </p>
 
@@ -161,17 +161,17 @@ const RestaurantDetail = () => {
                     </div>
                   ) : (
                     !review.verified && (
-                      <div className="mb-6 flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded-xl text-sm font-medium">
+                      <div className="mb-6 flex items-center gap-2 text-amber-600 bg-amber-50 dark:bg-amber-900/20 px-4 py-2 rounded-xl text-sm font-medium transition-colors">
                         <AlertCircle className="w-4 h-4" /> Unverified Review
                       </div>
                     )
                   )}
 
-                  <div className="flex items-center gap-6 border-t border-black/5 pt-6">
-                    <button className="flex items-center gap-2 text-slate-500 hover:text-rose-500 transition-colors">
+                  <div className="flex items-center gap-6 border-t border-black/5 dark:border-white/5 pt-6 transition-colors">
+                    <button className="flex items-center gap-2 text-muted hover:text-rose-500 transition-colors">
                       <Heart className="w-5 h-5" /> <span className="text-sm font-bold">{review.likes}</span>
                     </button>
-                    <button className="flex items-center gap-2 text-slate-500 hover:text-tea-dark transition-colors">
+                    <button className="flex items-center gap-2 text-muted hover:text-tea-dark transition-colors">
                       <MessageCircle className="w-5 h-5" /> <span className="text-sm font-bold">Comment</span>
                     </button>
                   </div>
@@ -183,16 +183,16 @@ const RestaurantDetail = () => {
 
         {/* Right Column: Sidebar */}
         <div className="space-y-8">
-          <div className="glass rounded-[32px] p-8">
-            <h3 className="text-xl font-display font-bold text-slate-800 mb-6">Location</h3>
-            <div className="h-48 bg-tea/30 rounded-2xl mb-4 flex items-center justify-center text-tea-dark font-medium">
+          <div className="glass-card !p-8">
+            <h3 className="text-xl font-display font-bold mb-6">Location</h3>
+            <div className="h-48 bg-tea/30 dark:bg-tea-dark/20 rounded-2xl mb-4 flex items-center justify-center text-tea-dark font-medium transition-colors">
               <MapPin className="w-8 h-8 opacity-50" />
             </div>
-            <p className="text-slate-600 text-sm">{restaurant.location}</p>
+            <p className="text-muted text-sm">{restaurant.location}</p>
           </div>
 
-          <div className="glass rounded-[32px] p-8">
-            <h3 className="text-xl font-display font-bold text-slate-800 mb-4">Photos</h3>
+          <div className="glass-card !p-8">
+            <h3 className="text-xl font-display font-bold mb-4">Photos</h3>
             <div className="grid grid-cols-2 gap-3">
               {restaurant.photos.slice(1).map((p, i) => (
                 <img key={i} src={p} className="w-full h-24 object-cover rounded-xl" alt="Restro" />
@@ -211,7 +211,7 @@ const RestaurantDetail = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowReviewModal(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -223,11 +223,11 @@ const RestaurantDetail = () => {
                 <X className="w-6 h-6" />
               </button>
 
-              <h2 className="text-3xl font-display font-bold text-slate-800 mb-8">Post a Review</h2>
+              <h2 className="text-3xl font-display font-bold mb-8">Post a Review</h2>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Rating</label>
+                  <label className="block text-sm font-bold text-muted mb-2">Rating</label>
                   <div 
                     className="flex gap-2"
                     onMouseLeave={() => setHoverRating(0)}
@@ -237,16 +237,16 @@ const RestaurantDetail = () => {
                         key={s}
                         onClick={() => setRating(s)}
                         onMouseEnter={() => setHoverRating(s)}
-                        className={`w-8 h-8 cursor-pointer transition-colors ${(hoverRating || rating) >= s ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`}
+                        className={`w-8 h-8 cursor-pointer transition-colors ${(hoverRating || rating) >= s ? 'text-amber-400 fill-amber-400' : 'text-slate-200 dark:text-slate-700'}`}
                       />
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Your Experience</label>
+                  <label className="block text-sm font-bold text-muted mb-2">Your Experience</label>
                   <textarea
-                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 h-32 outline-none"
+                    className="w-full rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark p-4 h-32 outline-none transition-colors"
                     placeholder="Tell us about your visit..."
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
@@ -254,7 +254,7 @@ const RestaurantDetail = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Upload Photo (Must be Geo-tagged)</label>
+                  <label className="block text-sm font-bold text-muted mb-2">Upload Photo (Must be Geo-tagged)</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -264,10 +264,10 @@ const RestaurantDetail = () => {
                   />
                   <label
                     htmlFor="photo-upload"
-                    className="border-2 border-dashed border-tea-dark/30 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 bg-tea/5 hover:bg-tea/10 transition-colors cursor-pointer"
+                    className="border-2 border-dashed border-tea-dark/30 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 bg-tea/5 dark:bg-tea-dark/10 hover:bg-tea/10 transition-colors cursor-pointer"
                   >
                     <Upload className="w-8 h-8 text-tea-dark" />
-                    <span className="text-sm font-medium text-slate-500">
+                    <span className="text-sm font-medium text-muted">
                       {photo ? photo.name : "Click to upload or drag and drop"}
                     </span>
                     <span className="text-[10px] text-slate-400 uppercase tracking-widest">JPG, PNG up to 10MB</span>
@@ -286,6 +286,7 @@ const RestaurantDetail = () => {
           </div>
         )}
       </AnimatePresence>
+
     </motion.div>
   );
 };

@@ -89,12 +89,12 @@ const Home = () => {
         <motion.h1
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
-          className="text-5xl md:text-7xl font-display font-bold text-slate-800 mb-6 tracking-tight"
+          className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tight"
         >
           Authentic Reviews.<br />
           <span className="text-tea-dark">Verified by AI.</span>
         </motion.h1>
-        <p className="text-slate-600 text-lg max-w-2xl mx-auto mb-10">
+        <p className="text-muted text-lg max-w-2xl mx-auto mb-10">
           Discover restaurants with reviews you can actually trust.
           Every verified post is backed by geo-tagged photos and Gemini AI validation.
         </p>
@@ -105,7 +105,7 @@ const Home = () => {
             <input
               type="text"
               placeholder="Search restaurants, cuisines, or locations..."
-              className="w-full pl-12 pr-4 py-4 rounded-2xl glass border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700 shadow-xl"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl glass border-none focus:ring-2 focus:ring-tea-dark outline-none dark:text-white shadow-xl"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -123,7 +123,7 @@ const Home = () => {
 
       <section className="mb-20">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-display font-bold text-slate-800">
+          <h2 className="text-2xl font-display font-bold">
             {search ? `Search Results for "${search}"` : "Trending Restaurants"}
           </h2>
           {!search && (
@@ -145,7 +145,7 @@ const Home = () => {
                 className="group"
               >
                 <Link to={`/restaurant/${rest._id}`}>
-                  <div className="glass rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                  <div className="glass-card overflow-hidden !p-0 hover:shadow-2xl">
                     <div className="h-48 overflow-hidden relative">
                       <img
                         src={rest.photos[0]}
@@ -153,22 +153,22 @@ const Home = () => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         referrerPolicy="no-referrer"
                       />
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                      <div className="absolute top-4 right-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm transition-colors">
                         <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                        <span className="text-sm font-bold text-slate-800">{rest.averageRating}</span>
+                        <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{rest.averageRating}</span>
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-display font-bold text-slate-800 mb-1">{rest.name}</h3>
-                      <div className="flex items-center gap-1 text-slate-500 text-sm mb-3">
+                      <h3 className="text-xl font-display font-bold mb-1">{rest.name}</h3>
+                      <div className="flex items-center gap-1 text-muted text-sm mb-3">
                         <MapPin className="w-3 h-3" />
                         <span>{rest.location}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium px-3 py-1 bg-tea/50 text-tea-dark rounded-full">
+                        <span className="text-xs font-medium px-3 py-1 bg-tea/50 dark:bg-tea-dark/30 text-tea-dark dark:text-tea-200 rounded-full transition-colors">
                           {rest.category}
                         </span>
-                        <span className="text-xs text-slate-400">Reviews</span>
+                        <span className="text-xs text-muted">Reviews</span>
                       </div>
                     </div>
                   </div>
@@ -177,8 +177,8 @@ const Home = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200">
-            <p className="text-slate-500 mb-6">No restaurants found matching your search.</p>
+          <div className="text-center py-20 bg-white/5 dark:bg-slate-900/40 rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800 transition-colors">
+            <p className="text-muted mb-6">No restaurants found matching your search.</p>
             <button
               onClick={() => setShowAddModal(true)}
               className="bg-tea-dark text-white px-8 py-3 rounded-2xl font-bold shadow-lg"
@@ -198,7 +198,7 @@ const Home = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowAddModal(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -206,34 +206,34 @@ const Home = () => {
               exit={{ scale: 0.9, opacity: 0 }}
               className="relative w-full max-w-lg glass rounded-[40px] p-10 shadow-2xl"
             >
-              <h2 className="text-3xl font-display font-bold text-slate-800 mb-8">Add New Restaurant</h2>
+              <h2 className="text-3xl font-display font-bold mb-8">Add New Restaurant</h2>
               <form onSubmit={handleAddRestaurant} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Restaurant Name</label>
+                  <label className="block text-sm font-bold text-muted mb-2">Restaurant Name</label>
                   <input
                     type="text"
                     required
-                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none"
+                    className="w-full rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none transition-colors"
                     placeholder="Enter name..."
                     value={newRest.name}
                     onChange={e => setNewRest({ ...newRest, name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Location</label>
+                  <label className="block text-sm font-bold text-muted mb-2">Location</label>
                   <input
                     type="text"
                     required
-                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none"
+                    className="w-full rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none transition-colors"
                     placeholder="Address or City..."
                     value={newRest.location}
                     onChange={e => setNewRest({ ...newRest, location: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Category</label>
+                  <label className="block text-sm font-bold text-muted mb-2">Category</label>
                   <select
-                    className="w-full rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none appearance-none"
+                    className="w-full rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark p-4 outline-none appearance-none transition-colors"
                     value={newRest.category}
                     onChange={e => setNewRest({ ...newRest, category: e.target.value })}
                   >
@@ -259,7 +259,7 @@ const Home = () => {
 
       <section>
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-display font-bold text-slate-800">Recent Community Activity</h2>
+          <h2 className="text-2xl font-display font-bold">Recent Community Activity</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -269,19 +269,19 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.05 }}
-              className="glass rounded-[32px] p-6 shadow-sm flex flex-col gap-4"
+              className="glass-card shadow-sm flex flex-col gap-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <img src={review.user.avatar} alt={review.user.name} className="w-10 h-10 rounded-full border border-white shadow-sm" />
+                  <img src={review.user.avatar} alt={review.user.name} className="w-10 h-10 rounded-full border border-white dark:border-slate-700 shadow-sm transition-colors" />
                   <div>
-                    <h4 className="font-bold text-sm text-slate-800">{review.user.name}</h4>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{review.timestamp}</span>
+                    <h4 className="font-bold text-sm">{review.user.name}</h4>
+                    <span className="text-[10px] text-muted uppercase font-bold tracking-wider">{review.timestamp}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 bg-white/50 px-2 py-1 rounded-full">
+                <div className="flex items-center gap-1 bg-white/50 dark:bg-slate-800/50 px-2 py-1 rounded-full transition-colors">
                   <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                  <span className="text-xs font-bold text-slate-700">{review.rating}.0</span>
+                  <span className="text-xs font-bold">{review.rating}.0</span>
                 </div>
               </div>
 
@@ -296,20 +296,20 @@ const Home = () => {
                 </div>
                 <div className="flex flex-col justify-between py-1">
                   <div>
-                    <h5 className="font-display font-bold text-slate-800 text-sm mb-1">{review.restaurant}</h5>
-                    <p className="text-slate-600 text-xs line-clamp-2 italic">"{review.text}"</p>
+                    <h5 className="font-display font-bold text-sm mb-1">{review.restaurant}</h5>
+                    <p className="text-muted text-xs line-clamp-2 italic">"{review.text}"</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1 text-slate-400">
+                    <div className="flex items-center gap-1 text-muted">
                       <Heart className="w-3 h-3" />
                       <span className="text-[10px] font-bold">{review.likes}</span>
                     </div>
-                    <div className="flex items-center gap-1 text-slate-400">
+                    <div className="flex items-center gap-1 text-muted">
                       <MessageCircle className="w-3 h-3" />
                       <span className="text-[10px] font-bold">Reply</span>
                     </div>
                     {review.verified && (
-                      <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-tighter">Verified Visit</span>
+                      <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tighter transition-colors">Verified Visit</span>
                     )}
                   </div>
                 </div>
@@ -318,6 +318,7 @@ const Home = () => {
           ))}
         </div>
       </section>
+
     </motion.div>
   );
 };

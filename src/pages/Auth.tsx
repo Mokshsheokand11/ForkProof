@@ -54,19 +54,19 @@ const Auth = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md glass rounded-[40px] p-12 shadow-2xl"
+        className="w-full max-w-md glass-card !p-12 shadow-2xl"
       >
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-display font-bold text-slate-800 mb-2">
+          <h1 className="text-3xl font-display font-bold mb-2">
             {isLogin ? "Welcome Back" : "Create Account"}
           </h1>
-          <p className="text-slate-500">
+          <p className="text-muted">
             {isLogin ? "Sign in to your authentic food journey" : "Join the community of verified foodies"}
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-rose-50 text-rose-500 text-sm font-medium rounded-2xl border border-rose-100 italic">
+          <div className="mb-6 p-4 bg-rose-50 dark:bg-rose-950/20 text-rose-500 text-sm font-medium rounded-2xl border border-rose-100 dark:border-rose-900/40 italic transition-colors">
             {error}
           </div>
         )}
@@ -81,7 +81,7 @@ const Auth = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required={!isLogin}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700"
+                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark outline-none dark:text-white transition-colors"
               />
             </div>
           )}
@@ -94,7 +94,7 @@ const Auth = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark outline-none dark:text-white transition-colors"
             />
           </div>
 
@@ -106,7 +106,7 @@ const Auth = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 border-none focus:ring-2 focus:ring-tea-dark outline-none text-slate-700"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 dark:bg-slate-800/50 border-none focus:ring-2 focus:ring-tea-dark outline-none dark:text-white transition-colors"
             />
           </div>
 
@@ -119,7 +119,7 @@ const Auth = () => {
           </button>
         </form>
 
-        <div className="mt-10 pt-8 border-t border-slate-100/50 text-center">
+        <div className="mt-10 pt-8 border-t border-slate-100/50 dark:border-white/5 text-center transition-colors">
           <p className="text-slate-400 text-sm mb-3">
             {isLogin ? "New to ForkProof?" : "Been here before?"}
           </p>
@@ -135,6 +135,7 @@ const Auth = () => {
           </button>
         </div>
       </motion.div>
+
     </div>
   );
 };
